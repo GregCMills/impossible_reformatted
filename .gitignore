@@ -1,1 +1,7 @@
-materials/impossible.pdf
+*.pdf
+*.log
+*.out
+*.aux
+*.toc
+*.gz
+*.tex
