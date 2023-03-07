@@ -1,3 +1,2 @@
 %closer
-\end{multicols}
 \end{document} % This is the end of the document

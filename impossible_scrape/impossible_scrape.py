@@ -22,7 +22,7 @@ def page_sort(line_span: dict):
     return value
 
 with fitz.open(DIGITIZED_FILE) as doc:
-    for page in doc.pages(123,132,1):
+    for page in doc.pages(203,204,1):
         text_page = page.get_textpage()
         test_json = text_page.extractJSON()
         text_dicts = text_page.extractDICT()
@@ -37,10 +37,7 @@ with fitz.open(DIGITIZED_FILE) as doc:
                     line_text = re.sub("\%", "\\%", line_text)
                     line_text = re.sub("’", "\'", line_text)
                     line_text = re.sub("(\w+)(-)$", r'\1', line_text)
-                    line_text = re.sub("(\w+)(-)$", r'\1', line_text)
                     line_text = re.sub("\n\n", '', line_text)
-                    line_text = re.sub("[а-яА-Я]+", '[Russian Word]', line_text)
-                    line_text = re.sub("−", '-', line_text)
                     # Merge Headings if this and previous were size 18. (Some headings are formatted weirdly, and so are spread accross spans.)
                     if i > 0 and raw_line_spans[i - 1]['size'] == 18 and spans['size'] == 18:
                         line_spans[-1]['text'] += line_text
@@ -82,15 +79,11 @@ for page in pages:
                 file.write(f"\n\section{{{text['text']}}}\n")
             # Chaper Heading
             case 36.0:
-                if first_chapter:
-                    file.write(f"\n\chapter{{{text['text']}}}\n\\begin{{multicols}}{{2}}\n")
-                    first_chapter = False
-                else:
-                    file.write(f"\end{{multicols}}\n\chapter{{{text['text']}}}\n\\begin{{multicols}}{{2}}\n")
+                file.write(f"\n\chapter{{{text['text']}}}\n")
     # I want the latex pages to number the same as the orginal pdf, so I force a new page at the end of each read page.
     file.write("\\newpage\n")
 file.write(closer_text)
 file.close() 
 
-pdfl = PDFLaTeX.from_texfile(OUTPUT_LATEX)
-pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=True)
+# pdfl = PDFLaTeX.from_texfile(OUTPUT_LATEX)
+# pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=True)
